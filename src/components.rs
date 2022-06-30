@@ -10,7 +10,7 @@ use heron::prelude::*;
 #[derive(Component)]
 pub struct MainCamera;
 
-#[derive(Clone, Debug, Default, Bundle, LdtkIntCell, Component)]
+#[derive(Clone, Debug, Default, Bundle, LdtkIntCell)]
 pub struct ColliderBundle {
     pub collider: CollisionShape,
     pub rigid_body: RigidBody,

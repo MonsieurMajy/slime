@@ -81,7 +81,7 @@ fn main() {
         .add_plugin(MainMenuPlugin)
         .add_plugin(SlimePlugin)
         .insert_resource(Gravity::from(Vec3::new(0.0, -2000., 0.0)))
-        .insert_resource(LevelSelection::Index(1))
+        .insert_resource(LevelSelection::Index(0))
         .insert_resource(LdtkSettings {
             level_spawn_behavior: LevelSpawnBehavior::UseWorldTranslation {
                 load_level_neighbors: true,
@@ -91,6 +91,7 @@ fn main() {
         })
         .add_startup_system(systems::setup)
         .add_system(world_rotation_system)
+        .add_system(player_collision_with_pot)
         .add_startup_system(background_audio)
         .add_system(systems::spawn_wall_collision)
         .add_system(systems::animate_sprite_system)

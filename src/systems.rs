@@ -6,6 +6,7 @@ use crate::{
 };
 
 use bevy::prelude::*;
+use bevy::sprite::collide_aabb::collide;
 use bevy_ecs_ldtk::prelude::*;
 use bevy_kira_audio::Audio;
 
@@ -16,6 +17,21 @@ use heron::{CollisionShape, PhysicMaterial, RigidBody};
 use heron::*;
 
 const PI: f32 = 3.1415;
+
+// region:     --- Ressources
+
+pub struct WorldStatus {
+    pub rotation: Vec2,
+}
+
+#[derive(Default)]
+pub struct CollisionCnt {
+    pub with_pots: u32,
+    pub with_walls: u32,
+}
+// endregion:  --- Ressources
+
+
 
 pub fn setup(
     mut commands: Commands,
@@ -35,12 +51,16 @@ pub fn setup(
     commands.insert_resource(GetGameState {
         game_state: GameState::StartMenu,
     });
-
     //Enable to recall the setup but ignoring the code before
     asset_server.watch_for_changes().unwrap();
 
     //Load the levels
     let ldtk_handle = asset_server.load(MAP_LDTK);
+
+    //insert ressource
+    commands.insert_resource(WorldStatus{rotation: Vec2::new(1., 0.)});
+    commands.insert_resource(CollisionCnt::default());
+
 
     //load textures atlases :
     let texture_handle = asset_server.load(PLAYER_JUMP);
@@ -242,40 +262,91 @@ pub fn spawn_wall_collision(
 pub fn world_rotation_system(
     input: Res<Input<KeyCode>>,
     mut gravity: ResMut<Gravity>,
-    get_game_state: Res<GetGameState>,
-    mut query: Query<&mut Transform, With<MainCamera>>,
+    mut world_status: ResMut<WorldStatus>,
+    mut query: Query<&mut Transform, With<MainCamera>>
 ) {
-    if get_game_state.game_state == GameState::Overworld {
-        //Rotate the camera
-        if let Ok(mut camera_tf) = query.get_single_mut() {
-            if input.just_pressed(KeyCode::R) {
-                //Rotate the camera
-                camera_tf.rotate(Quat::from_rotation_z(PI / 2.));
-                //Change gravity
-                let gravity = gravity.as_mut();
-                if gravity.vector().y < 0. {
-                    *gravity = Gravity::from(Vec3::new(2000., 0., 0.0));
-                } else if gravity.vector().x > 0. {
-                    *gravity = Gravity::from(Vec3::new(0., 2000., 0.0));
-                } else if gravity.vector().y > 0. {
-                    *gravity = Gravity::from(Vec3::new(-2000., 0., 0.0));
-                } else if gravity.vector().x < 0. {
-                    *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+    //Rotate the camera
+    if let Ok(mut camera_tf) = query.get_single_mut() {
+        if input.just_pressed(KeyCode::R) {
+            //Rotate the camera
+            camera_tf.rotate(Quat::from_rotation_z(PI / 2.));
+            //Change gravity
+            let gravity = gravity.as_mut();
+            if gravity.vector().y < 0. {
+                *gravity = Gravity::from(Vec3::new(2000., 0., 0.0));
+                world_status.rotation = Vec2::new(0., 1.);
+            } else
+            if gravity.vector().x > 0. {
+                *gravity = Gravity::from(Vec3::new(0., 2000., 0.0));
+                world_status.rotation = Vec2::new(-1., 0.);
+            } else
+            if gravity.vector().y > 0. {
+                *gravity = Gravity::from(Vec3::new(-2000., 0., 0.0));
+                world_status.rotation = Vec2::new(0., -1.);
+            } else
+            if gravity.vector().x < 0. {
+                *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+                world_status.rotation = Vec2::new(1., 0.);
+
+            }
+
+        }
+        if input.just_pressed(KeyCode::T) {
+            //Rotate the camera
+            camera_tf.rotate(Quat::from_rotation_z(-PI / 2.));
+            //Change gravity
+            let gravity = gravity.as_mut();
+            if gravity.vector().y < 0. {
+                *gravity = Gravity::from(Vec3::new(-2000., 0., 0.0));
+                world_status.rotation = Vec2::new(0., -1.);
+            } else
+            if gravity.vector().x < 0. {
+                *gravity = Gravity::from(Vec3::new(0., 2000., 0.0));
+                world_status.rotation = Vec2::new(-1., 0.);
+            } else 
+            if gravity.vector().y > 0. {
+                *gravity = Gravity::from(Vec3::new(2000., 0., 0.0));
+                world_status.rotation = Vec2::new(0., 1.);
+            } else 
+            if gravity.vector().x > 0. {
+                *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+                world_status.rotation = Vec2::new(1., 0.);
+            }
+        }
+
+    }
+}
+
+pub fn player_collision_with_pot (
+    mut collision_cnt: ResMut<CollisionCnt>,
+    pot_query: Query<Entity, With<Pot>>,
+    mut player: Query<Entity, With<Player>>,
+    mut collisions: EventReader<CollisionEvent>,
+) {
+    for collision in collisions.iter() {
+        match collision {
+            CollisionEvent::Started(collider_a, collider_b ) => {
+                if let Ok(mut player) = player.get_mut(collider_a.rigid_body_entity()) {
+                    if pot_query.get(collider_b.rigid_body_entity()).is_ok() {
+                        println!("Collision detected");
+                    }
+                }
+                if let Ok(mut player) = player.get_mut(collider_b.rigid_body_entity()) {
+                    if pot_query.get(collider_a.rigid_body_entity()).is_ok() {
+                        println!("Collision detected");
+                    }
                 }
             }
-            if input.just_pressed(KeyCode::T) {
-                //Rotate the camera
-                camera_tf.rotate(Quat::from_rotation_z(-PI / 2.));
-                //Change gravity
-                let gravity = gravity.as_mut();
-                if gravity.vector().y < 0. {
-                    *gravity = Gravity::from(Vec3::new(-2000., 0., 0.0));
-                } else if gravity.vector().x < 0. {
-                    *gravity = Gravity::from(Vec3::new(0., 2000., 0.0));
-                } else if gravity.vector().y > 0. {
-                    *gravity = Gravity::from(Vec3::new(2000., 0., 0.0));
-                } else if gravity.vector().x > 0. {
-                    *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+            CollisionEvent::Stopped(collider_aa, collider_bb ) => {
+                if let Ok(mut player) = player.get_mut(collider_aa.rigid_body_entity()) {
+                    if pot_query.get(collider_bb.rigid_body_entity()).is_ok() {
+                        println!("Collision stopped");
+                    }
+                }
+                if let Ok(mut player) = player.get_mut(collider_bb.rigid_body_entity()) {
+                    if pot_query.get(collider_aa.rigid_body_entity()).is_ok() {
+                        println!("Collision stopped");
+                    }
                 }
             }
         }
