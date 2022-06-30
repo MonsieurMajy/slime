@@ -63,6 +63,14 @@ pub struct GetGameState {
     level_index: usize,
 }
 
+#[derive(Default)]
+pub struct CollisionStatus {
+    top: bool,
+    bottom: bool,
+    right: bool,
+    left: bool,
+}
+
 // endregion: --- Assets constants
 fn main() {
     env::set_var("RUST_BACKTRACE", "1");
@@ -84,7 +92,7 @@ fn main() {
         .add_plugin(MainMenuPlugin)
         .add_plugin(SlimePlugin)
         .insert_resource(Gravity::from(Vec3::new(0.0, -2000., 0.0)))
-        .insert_resource(LevelSelection::Index(0))
+        .insert_resource(LevelSelection::Index(2))
         .insert_resource(LdtkSettings {
             level_spawn_behavior: LevelSpawnBehavior::UseZeroTranslation,
             set_clear_color: SetClearColor::FromLevelBackground,
