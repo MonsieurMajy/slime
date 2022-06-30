@@ -54,30 +54,30 @@
 			"entityInstances": [
 				{
 					"__identifier": "Key",
-					"__grid": [14,11],
+					"__grid": [13,10],
 					"__pivot": [0,0],
 					"__tags": [],
 					"__tile": { "tilesetUid": 27, "x": 0, "y": 0, "w": 63, "h": 63 },
 					"__smartColor": "#F8FF00",
 					"iid": "6bbf0642-dbe0-11ec-9ee1-25aed201f205",
-					"width": 16,
-					"height": 16,
+					"width": 32,
+					"height": 32,
 					"defUid": 14,
-					"px": [224,176],
+					"px": [208,160],
 					"fieldInstances": []
 				},
 				{
 					"__identifier": "Player",
-					"__grid": [10,14],
+					"__grid": [10,13],
 					"__pivot": [0,0],
 					"__tags": [],
 					"__tile": { "tilesetUid": 23, "x": 0, "y": 0, "w": 32, "h": 32 },
 					"__smartColor": "#94D9B3",
 					"iid": "6bbf0643-dbe0-11ec-9ee1-89d09761b089",
-					"width": 16,
-					"height": 16,
+					"width": 32,
+					"height": 32,
 					"defUid": 18,
-					"px": [160,224],
+					"px": [160,208],
 					"fieldInstances": []
 				}
 			]
