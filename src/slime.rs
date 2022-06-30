@@ -42,7 +42,7 @@ fn read_user_from_file<P: AsRef<Path>>(path: P) -> io::Result<Value> {
 */
 
 fn slime_spawn_system(mut commands: Commands, game_textures: Res<GameTextures>) {
-    let v: Value = read_user_from_file("assets/test/simplified/Level_0/data.json").unwrap();
+    let v: Value = read_user_from_file("assets/Maps/Level_0/data.json").unwrap();
     let x = v["entities"]["Player"][0]["x"].as_f64().unwrap() as f32;
     let y = v["entities"]["Player"][0]["y"].as_f64().unwrap() as f32;
     //let window = windows.get_primary_mut().unwrap();

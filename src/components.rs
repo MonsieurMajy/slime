@@ -101,7 +101,7 @@ pub struct Pot;
 
 #[derive(Clone, Default, Bundle, LdtkEntity)]
 pub struct PotBundle {
-    #[sprite_bundle("pot.png")]
+    #[sprite_bundle("Sprites/Traps/Pot.png")]
     #[bundle]
     pub sprite_bundle: SpriteBundle,
     #[from_entity_instance]
