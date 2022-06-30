@@ -51,13 +51,8 @@ impl From<EntityInstance> for ColliderBundle {
                     half_extends: Vec3::new(8., 8., 0.),
                     border_radius: None,
                 },
-                rigid_body: RigidBody::Dynamic,
+                rigid_body: RigidBody::Static,
                 rotation_constraints,
-                physic_material: PhysicMaterial {
-                    friction: 0.5,
-                    density: 15.0,
-                    ..Default::default()
-                },
                 ..Default::default()
             },
             _ => ColliderBundle::default(),
@@ -67,7 +62,6 @@ impl From<EntityInstance> for ColliderBundle {
 
 impl From<IntGridCell> for ColliderBundle {
     fn from(int_grid_cell: IntGridCell) -> ColliderBundle {
-        println!("Setup grid");
         let rotation_constraints = RotationConstraints::lock();
 
         if int_grid_cell.value == 2 || int_grid_cell.value == 1 {
@@ -76,7 +70,7 @@ impl From<IntGridCell> for ColliderBundle {
                     half_extends: Vec3::new(8., 8., 0.),
                     border_radius: None,
                 },
-                rigid_body: RigidBody::Sensor,
+                rigid_body: RigidBody::Static,
                 rotation_constraints,
                 ..Default::default()
             }
@@ -94,6 +88,10 @@ pub struct Wall;
 #[derive(Clone, Debug, Default, Bundle, LdtkIntCell)]
 pub struct WallBundle {
     wall: Wall,
+    //The code below allows to spawn a collider for each cell, not very good performance wise
+    //#[from_int_grid_cell]
+    //#[bundle]
+    //pub collider_bundle: ColliderBundle,
 }
 
 #[derive(Copy, Clone, PartialEq, Debug, Default, Component)]
@@ -108,8 +106,22 @@ pub struct PotBundle {
     #[bundle]
     pub collider_bundle: ColliderBundle,
     pub pot: Pot,
-    #[worldly]
-    pub worldly: Worldly,
+    pub ground_detection: GroundDetection,
+
+    // The whole EntityInstance can be stored directly as an EntityInstance component
+    #[from_entity_instance]
+    entity_instance: EntityInstance,
+}
+
+#[derive(Clone, Default, Bundle, LdtkEntity)]
+pub struct KeyBundle {
+    #[sprite_bundle("Sprites/Items/Checkpoints/flag.png")]
+    #[bundle]
+    pub sprite_bundle: SpriteBundle,
+    #[from_entity_instance]
+    #[bundle]
+    pub collider_bundle: ColliderBundle,
+    pub pot: Pot,
     pub ground_detection: GroundDetection,
 
     // The whole EntityInstance can be stored directly as an EntityInstance component
