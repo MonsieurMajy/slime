@@ -94,23 +94,23 @@ fn slime_spawn_system(mut commands: Commands, game_textures: Res<GameTextures>) 
 
 fn slime_movement_system(
     time: Res<Time>,
-    mut query: Query<(&mut Velocity, &mut Transform, &mut Slime)>,
+    mut query: Query<(&Velocity, &mut Transform, &mut Slime)>,
 ) {
-    for (mut velocity, mut transform, mut slime) in query.iter_mut() {
-        let translation = &mut velocity;
+    for (velocity, mut transform, mut slime) in query.iter_mut() {
+        let translation = &mut transform.translation;
         if slime.stop_timer != 0 {
             slime.stop_timer -= 1;
         } else {
             match slime.side {
                 Side::Left => {
-                    translation.linear.y = BASE_SPEED
+                    translation.y += velocity.linear.y * time.delta_seconds() * BASE_SPEED
                 }
                 Side::Right => {
-                    translation.linear.y = BASE_SPEED
+                    translation.y += velocity.linear.y * time.delta_seconds() * BASE_SPEED
                 }
-                Side::Top => translation.linear.x = BASE_SPEED,
+                Side::Top => translation.x += velocity.linear.x * time.delta_seconds() * BASE_SPEED,
                 Side::Bottom => {
-                    translation.linear.x = BASE_SPEED
+                    translation.x += velocity.linear.x * time.delta_seconds() * BASE_SPEED
                 }
                 Side::Inside => (),
             }
