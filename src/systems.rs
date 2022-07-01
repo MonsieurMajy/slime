@@ -43,7 +43,7 @@ pub fn setup(
         x = level_x + level_width/2 
         y = level_y + level_width/2 */
     camera.transform = Transform {
-        translation: Vec3::new(128., 128., 1000.),
+        translation: Vec3::new(200., 200., 1000.),
         ..default()
     };
     commands.spawn_bundle(camera).insert(MainCamera);
@@ -51,7 +51,9 @@ pub fn setup(
     //Add ressources
     commands.insert_resource(GetGameState {
         game_state: GameState::StartMenu,
-        level_index: 2,
+        level_index: 0,
+        respawn_level: 0,
+        player_spawned: false,
     });
     commands.insert_resource(CollisionStatus::default());
 
@@ -95,7 +97,7 @@ pub fn setup(
 
     // create explosion texture atlas
     let explosion_atlas = asset_server.load("Sprites/Items/Fruits/Collected.png");
-    let texture_atlas = TextureAtlas::from_grid(explosion_atlas, Vec2::new(192., 32.), 6, 1);
+    let texture_atlas = TextureAtlas::from_grid(explosion_atlas, Vec2::new(32., 32.), 6, 1);
     let explosion = texture_atlases.add(texture_atlas);
 
     let game_textures = GameTextures {
@@ -423,6 +425,71 @@ pub fn player_collision_with_pot (
     }
 }
 
+pub fn player_collision_with_spikes (
+    mut commands: Commands,
+    mut get_game_state: ResMut<GetGameState>,
+    mut world_status: ResMut<WorldStatus>,
+    mut gravity: ResMut<Gravity>,
+    spikes_query: Query<Entity, With<Spikes>>,
+    player: Query<(Entity, &Transform), With<Player>>,
+    mut collisions: EventReader<CollisionEvent>,
+    mut query: Query<&mut Transform, (With<MainCamera>, Without<Player>)>
+) {
+    for collision in collisions.iter() {
+        match collision {
+            CollisionEvent::Started(collider_a, collider_b ) => {
+                if let Ok((player, tf)) = player.get(collider_a.rigid_body_entity()) {
+                    
+                    if spikes_query.get(collider_b.rigid_body_entity()).is_ok() {
+                        // Despawn the player
+                        commands.entity(player).despawn();
+                        get_game_state.player_spawned = false;
+                        get_game_state.respawn_level = 1;
+
+                        // Spawn the animation
+                       commands.spawn().insert(AnimationToSpawn(tf.translation.clone(), Animation::Explosion));
+                        
+                        // Spawn the current level after a delai (fade out)
+                        //get_game_state.level_index -= 1;
+                        commands.insert_resource(LevelSelection::Index(get_game_state.level_index));
+                        
+                        //Reset the gravity
+                        if let Ok(mut camera_tf) = query.get_single_mut() { 
+                            camera_tf.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), 0.);
+                        }
+                        *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+                        world_status.rotation = Vec2::new(1., 0.)
+                }
+                
+                }
+                if let Ok((player, tf)) = player.get(collider_b.rigid_body_entity()) {
+                    if spikes_query.get(collider_a.rigid_body_entity()).is_ok() {
+                        // Despawn the player
+                        commands.entity(player).despawn();
+                        get_game_state.player_spawned = false;
+                        get_game_state.respawn_level = 1;
+
+                        // Spawn the animation
+                       commands.spawn().insert(AnimationToSpawn(tf.translation.clone(), Animation::Explosion));
+                        
+                        // Spawn the current level after a delai (fade out)
+                        //get_game_state.level_index -= 1;
+                        commands.insert_resource(LevelSelection::Index(get_game_state.level_index));
+                        
+                        //Reset the gravity
+                        if let Ok(mut camera_tf) = query.get_single_mut() { 
+                            camera_tf.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), 0.);
+                        }
+                        *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+                        world_status.rotation = Vec2::new(1., 0.)
+                    }
+                }
+            }
+            CollisionEvent::Stopped(_, _) => (),
+        }
+    }
+}
+
 pub fn animate_sprite_system(
     //mut commands: Commands,
     time: Res<Time>,
@@ -449,7 +516,7 @@ pub fn animate_sprite_system(
 pub fn player_succeed(
     mut commands: Commands,
     key: Query<Entity, With<Key>>,
-    mut player: Query<(Entity, &Transform), With<Player>>,
+    player: Query<(Entity, &Transform), With<Player>>,
     mut collisions: EventReader<CollisionEvent>,
     mut world_status: ResMut<WorldStatus>,
     mut gravity: ResMut<Gravity>,
@@ -459,28 +526,46 @@ pub fn player_succeed(
     for collision in collisions.iter() {
         match collision {
             CollisionEvent::Started(collider_a, collider_b ) => {
-                if let Ok((mut player, tf)) = player.get_mut(collider_a.rigid_body_entity()) {
+                if let Ok((player, tf)) = player.get(collider_a.rigid_body_entity()) {
                     if key.get(collider_b.rigid_body_entity()).is_ok() {
                             // Despawn the player
                             commands.entity(player).despawn();
+                            get_game_state.player_spawned = false;
 
                             // Spawn the animation
                            commands.spawn().insert(AnimationToSpawn(tf.translation.clone(), Animation::Explosion));
                             
                             // Spawn the next level after a delai (fade out)
-                            commands.insert_resource(LevelSelection::Index(1));
-                            get_game_state.level_index = 1;
+                            get_game_state.level_index += 1;
+                            commands.insert_resource(LevelSelection::Index(get_game_state.level_index));
+                            
                             //Reset the gravity
                             if let Ok(mut camera_tf) = query.get_single_mut() { 
                                 camera_tf.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), 0.);
                             }
                             *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
-                            world_status.rotation = Vec2::new(1., 0.); 
+                            world_status.rotation = Vec2::new(1., 0.)
                     }
                 }
-                if let Ok((mut player, tf)) = player.get_mut(collider_b.rigid_body_entity()) {
+                if let Ok((player, tf)) = player.get(collider_b.rigid_body_entity()) {
                     if key.get(collider_a.rigid_body_entity()).is_ok() {
+                        // Despawn the player
+                        commands.entity(player).despawn();
+                        get_game_state.player_spawned = false;
 
+                        // Spawn the animation
+                       commands.spawn().insert(AnimationToSpawn(tf.translation.clone(), Animation::Explosion));
+                        
+                        // Spawn the next level after a delai (fade out)
+                        get_game_state.level_index += 1;
+                        commands.insert_resource(LevelSelection::Index(get_game_state.level_index));
+                        
+                        //Reset the gravity
+                        if let Ok(mut camera_tf) = query.get_single_mut() { 
+                            camera_tf.rotation = Quat::from_axis_angle(Vec3::new(0., 0., 1.), 0.);
+                        }
+                        *gravity = Gravity::from(Vec3::new(0., -2000., 0.0));
+                        world_status.rotation = Vec2::new(1., 0.)
                     }
                 }
             }
