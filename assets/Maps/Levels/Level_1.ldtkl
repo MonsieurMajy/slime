@@ -85,9 +85,9 @@
 		{
 			"__identifier": "Tiles",
 			"__type": "Tiles",
-			"__cWid": 25,
-			"__cHei": 25,
-			"__gridSize": 16,
+			"__cWid": 20,
+			"__cHei": 20,
+			"__gridSize": 21,
 			"__opacity": 1,
 			"__pxTotalOffsetX": 0,
 			"__pxTotalOffsetY": 0,
@@ -104,7 +104,7 @@
 			"autoLayerTiles": [],
 			"seed": 6411440,
 			"overrideTilesetUid": 142,
-			"gridTiles": [{ "px": [16,16], "src": [0,0], "f": 0, "t": 0, "d": [26] }],
+			"gridTiles": [{ "px": [126,21], "src": [0,0], "f": 0, "t": 0, "d": [26] }],
 			"entityInstances": []
 		},
 		{

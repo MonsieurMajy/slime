@@ -51,7 +51,7 @@ pub fn setup(
     //Add ressources
     commands.insert_resource(GetGameState {
         game_state: GameState::StartMenu,
-        level_index: 0,
+        level_index: 1,
         respawn_level: 0,
         player_spawned: false,
     });
