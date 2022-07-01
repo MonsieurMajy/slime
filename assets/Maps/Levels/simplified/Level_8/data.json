@@ -8,5 +8,32 @@
 		"IntGrid.png",
 		"Tiles.png"
 	],
-	"entities" : {}
+	"entities": {
+		"Player": [
+			{
+				"id": "Player",
+				"iid": "1b524d80-dbe0-11ec-8367-77da2c2f9377",
+				"layer": "Entities",
+				"x": 32,
+				"y": 112,
+				"width": 32,
+				"height": 32,
+				"color": 9755059,
+				"customFields" : {}
+			}
+		],
+		"Key": [
+			{
+				"id": "Key",
+				"iid": "1c772900-dbe0-11ec-8367-611e5b998b83",
+				"layer": "Entities",
+				"x": 320,
+				"y": 128,
+				"width": 32,
+				"height": 32,
+				"color": 16318208,
+				"customFields" : {}
+			}
+		]
+	}
 }

@@ -104,7 +104,7 @@
 			"autoLayerTiles": [],
 			"seed": 6411440,
 			"overrideTilesetUid": 142,
-			"gridTiles": [{ "px": [126,21], "src": [21,0], "f": 0, "t": 1, "d": [26] }],
+			"gridTiles": [{ "px": [21,21], "src": [21,0], "f": 0, "t": 1, "d": [21] }],
 			"entityInstances": []
 		},
 		{
