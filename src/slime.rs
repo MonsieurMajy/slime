@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::sprite::collide_aabb::Collision;
 use serde_json::*;
 
 use std::fs::File;
@@ -88,7 +89,7 @@ fn slime_spawn_system(mut commands: Commands,
             .insert(AnimationTimer(Timer::from_seconds(0.15, true)))
             .insert(CollisionShape::Cuboid {
                 half_extends: Vec3::new(
-                    PLAYER_IDLE_SIZE.0 * PLAYER_SCALE / 2.,
+                    PLAYER_IDLE_SIZE.0 * PLAYER_SCALE / 2. -2.,
                     PLAYER_IDLE_SIZE.1 * PLAYER_SCALE / 2.,
                     0.,
                 ),

@@ -36,13 +36,13 @@ impl From<EntityInstance> for ColliderBundle {
             },
             "Pot" => ColliderBundle {
                 collider: CollisionShape::Cuboid {
-                    half_extends: Vec3::new(8., 15., 0.),
+                    half_extends: Vec3::new(15., 22., 0.),
                     border_radius: None,
                 },
                 rigid_body: RigidBody::Dynamic,
                 rotation_constraints,
                 physic_material: PhysicMaterial {
-                    friction: 0.,
+                    friction: 0.01,
                     density: 15.0,
                     ..Default::default()
                 },
@@ -79,7 +79,7 @@ impl From<IntGridCell> for ColliderBundle {
         } else if int_grid_cell.value == 3 {
             ColliderBundle {
                 collider: CollisionShape::Cuboid {
-                    half_extends: Vec3::new(8., 8., 0.),
+                    half_extends: Vec3::new(2., 2., 0.),
                     border_radius: None,
                 },
                 rigid_body: RigidBody::Sensor,
@@ -192,3 +192,6 @@ pub struct Slime {
 
 #[derive(Component, Deref, DerefMut)]
 pub struct AnimationTimer(pub Timer);
+
+#[derive(Component, Deref, DerefMut)]
+pub struct ResetCollisionTimer(pub Timer);

@@ -1266,7 +1266,7 @@
 			"enumTags": [],
 			"customData": [],
 			"savedSelections": [],
-			"cachedPixelData": { "opaqueTiles": "0000000", "averageColors": "36ab46ab46ab46ac46ac46ac46ab" }
+			"cachedPixelData": null
 		}
 	], "enums": [], "externalEnums": [], "levelFields": [] },
 	"levels": [

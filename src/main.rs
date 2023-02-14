@@ -26,13 +26,13 @@ const PLAYER_JUMP: &str = "Sprites/Player/jump.png";
 const PLAYER_JUMP_SIZE: (f32, f32) = (24., 27.);
 const PLAYER_JUMP_COLUMN: usize = 8;
 
-const PLAYER_IDLE: &str = "Sprites/Player/idle.png";
-const PLAYER_IDLE_SIZE: (f32, f32) = (22., 23.);
-const PLAYER_IDLE_COLUMN: usize = 8;
+const PLAYER_IDLE: &str = "Sprites/Player/idle (30x19).png";
+const PLAYER_IDLE_SIZE: (f32, f32) = (30., 19.);
+const PLAYER_IDLE_COLUMN: usize = 16;
 
-const PLAYER_WALK: &str = "Sprites/Player/walk.png";
-const PLAYER_WALK_SIZE: (f32, f32) = (23., 24.);
-const PLAYER_WALK_COLUMN: usize = 10;
+const PLAYER_WALK: &str = "Sprites/Player/walk (30x19).png";
+const PLAYER_WALK_SIZE: (f32, f32) = (30., 19.);
+const PLAYER_WALK_COLUMN: usize = 12;
 
 const PLAYER_SCALE: f32 = 0.7;
 const SECURITY_DISTANCE: f32 = 10.;
@@ -81,8 +81,8 @@ fn main() {
         .insert_resource(ClearColor(CLEAR))
         .insert_resource(WindowDescriptor {
             title: "Gravity Legacy 2".to_string(),
-            width: 500.0,
-            height: 300.0,
+            width: 400.0,
+            height: 400.0,
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
@@ -104,9 +104,10 @@ fn main() {
         .add_system(systems::spawn_wall_collision)
         .add_system(world_rotation_system)
         .add_system(player_succeed)
-        .add_system(player_collision_with_pot)
+        //.add_system(player_collision_with_pot)
         .add_startup_system(background_audio)
         .add_system(systems::animate_sprite_system)
+        //.add_system(reset_collision_timer)
         .add_system(spawn_level_system)
         .add_system(animation_to_spawn_system)
         .add_system(animation_system)
