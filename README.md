@@ -3,6 +3,8 @@ Projet de dévelopement d'un jeu vidéo en Rust avec le moteur de jeu Bevy et le
 
 Le joueur incarne un slime qui possède le pouvoir de manipuler la gravité. A l'aide de R et T, le joueur peut provoquer une rotation du monde à 90° dans un sens, ou dans l'autre. Les flèches directionnelles sont utilisé pour le déplacement à droite et à gauche. Le but est alors de résoudre un ensemble de puzzle dans le but d'atteindre un drapeau pour avancer de salle en salle.
 
+Pour run le project, il faut avoir Rust installé sur sa machine et executé "cargo run" à la racine du projet.
+
 # Images
 ![01](https://github.com/MonsieurMajy/slime/assets/90928733/6fae2266-6ac3-44c7-9433-cef9360f3829)
 ![02](https://github.com/MonsieurMajy/slime/assets/90928733/c632b02d-3d85-48a5-af66-84f803c1a0ff)
