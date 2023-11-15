@@ -1,6 +1,19 @@
 # RustyGames
+Projet de dévelopement d'un jeu vidéo en Rust avec le moteur de jeu Bevy et le moteur physique Heron. Nous avions 2 semaines intensives pour prendre en main le language et l'architecture ECS du moteur de jeu puis designer et implémenter le jeu choisi en équipe de 5. Le Level Design a été réaliser à l'aide de l'outil LDTK.
 
-## controle
+Le joueur incarne un slime qui possède le pouvoir de manipuler la gravité. A l'aide de R et T, le joueur peut provoquer une rotation du monde à 90° dans un sens, ou dans l'autre. Les flèches directionnelles sont utilisé pour le déplacement à droite et à gauche. Le but est alors de résoudre un ensemble de puzzle dans le but d'atteindre un drapeau pour avancer de salle en salle.
+
+# Images
+![01](https://github.com/MonsieurMajy/slime/assets/90928733/6fae2266-6ac3-44c7-9433-cef9360f3829)
+![02](https://github.com/MonsieurMajy/slime/assets/90928733/c632b02d-3d85-48a5-af66-84f803c1a0ff)
+![03](https://github.com/MonsieurMajy/slime/assets/90928733/5b269d04-e46d-4596-a09a-2921367f3308)
+![04](https://github.com/MonsieurMajy/slime/assets/90928733/f04a256c-df9f-416d-9d18-ee02f7fad684)
+![05](https://github.com/MonsieurMajy/slime/assets/90928733/3645d662-40d4-475e-ac9d-0747051f78f0)
+![06](https://github.com/MonsieurMajy/slime/assets/90928733/4c5acf09-497f-439f-b7bf-1bd8f71c731f)
+
+
+# Design Document
+## Controle
 R et T pour changer le sens de la gravité
 Flèches droite et gauche pour se déplacer
 
@@ -57,7 +70,6 @@ On peut récupérer des objets activables qui donnent un gros bonus de vitesse p
  	- Perception du temps ralentie
 	- Télékinésie
  	- Annihilation des ennemies sous un certain radius
- 
  	- vitesse décrue
 	- vision floue/restreinte
 	- ennemis plus agressifs peu importe ce qui se passe
